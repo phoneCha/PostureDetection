@@ -62,7 +62,7 @@ class PostureDetector:
         self.log_tracker = {"left": {"range": None, "row": None}, "right": {"range": None, "row": None}}
         self.logger = CSVLogger(self.output_dir)
         self.pose = mp.solutions.pose.Pose()
-        self.cap = cv2.VideoCapture(1)  # Change to 0 if camera 1 is not available
+        self.cap = cv2.VideoCapture(0)  # Change to 0 if camera 1 is not available
 
     def process_frame(self, frame):
         height, width = frame.shape[:2]
