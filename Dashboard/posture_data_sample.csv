@@ -1,0 +1,4 @@
+timestamp,snapshot(png),Hip Angle,Angle range,frequency,total Duration
+2025-04-09 09:00:00,img_001.png,92,90–100°,3,15
+2025-04-09 09:15:00,img_002.png,108,>100°,2,10
+2025-04-09 09:30:00,img_003.png,85,<90°,5,20

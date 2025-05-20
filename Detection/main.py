@@ -1,57 +1,10 @@
 import cv2
-import math as m
-import mediapipe as mp
 import time
 import os
-import csv
 from datetime import datetime
-
-
-class AngleCalculator:
-    @staticmethod
-    def find_angle(x1, y1, x2, y2, x3, y3):
-        try:
-            angle = m.degrees(m.atan2(y3 - y2, x3 - x2) - m.atan2(y1 - y2, x1 - x2))
-            angle = abs(angle)
-            if angle > 180:
-                angle = 360 - angle
-            return angle
-        except ZeroDivisionError:
-            return 0
-
-    @staticmethod
-    def get_angle_range(angle):
-        start = (int(angle) // 10) * 10
-        end = start + 10
-        return f"{start}-{end}"
-
-
-class CSVLogger:
-    def __init__(self, output_dir, filename="hip_angle_log.csv"):
-        self.csv_file = os.path.join(output_dir, filename)
-        self.csv_header = ["Timestamp", "Image", "Side", "Hip Angle", "Angle Range", "Frequency", "Total Duration (s)"]
-        self._initialize_csv()
-
-    def _initialize_csv(self):
-        if not os.path.exists(self.csv_file):
-            with open(self.csv_file, mode="w", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(self.csv_header)
-
-    def log_data(self, row):
-        with open(self.csv_file, mode="a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow(row)
-
-    def update_data(self, rows):
-        with open(self.csv_file, "w", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerows(rows)
-
-    def read_data(self):
-        with open(self.csv_file, "r") as file:
-            return list(csv.reader(file))
-
+import mediapipe as mp
+from calculator import AngleCalculator
+from csv_logger import CSVLogger
 
 class PostureDetector:
     def __init__(self, snapshot_interval=10, output_dir="snapshots"):
@@ -62,7 +15,7 @@ class PostureDetector:
         self.log_tracker = {"left": {"range": None, "row": None}, "right": {"range": None, "row": None}}
         self.logger = CSVLogger(self.output_dir)
         self.pose = mp.solutions.pose.Pose()
-        self.cap = cv2.VideoCapture(1)  # Change to 0 if camera 1 is not available
+        self.cap = cv2.VideoCapture(0)  # Change to 0 if camera 1 is not available
 
     def process_frame(self, frame):
         height, width = frame.shape[:2]
